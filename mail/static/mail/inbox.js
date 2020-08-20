@@ -22,12 +22,14 @@ function send_mail() {
     })
     .then(response => response.json())
     .then(result => {
-        console.log(message);
+        console.log("Mail Sent");
     });
+
+    load_mailbox('sent');
 }
 
-function load_mail() {
-    fetch('/emails/inbox')
+function load_mail(mailbox) {
+    fetch('/emails/' + mailbox)
     .then(response => response.json())
     .then(emails => {
         for (let i = 0; i < emails.length; i ++){
@@ -36,8 +38,13 @@ function load_mail() {
             let newSubject = document.createElement('h2');
             let newTimestamp = document.createElement('h3');
 
-            console.log(emails[i].sender)
-            newSender = emails[i].sender;
+            //Determine 'sender' based on mailbox
+            if (mailbox === 'sent'){
+                newSender = emails[i].recipients;
+            } else {
+                newSender = emails[i].sender;
+            }
+
             newTimestamp = emails[i].timestamp;
             newSubject = emails[i].subject;
             newDiv.innerHTML = newSender + " - " + newSubject + " - " + newTimestamp;
@@ -70,6 +77,9 @@ function load_mailbox(mailbox) {
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
   if (mailbox === 'inbox') {
-      load_mail();
+      load_mail('inbox');
+  }
+  else if (mailbox === 'sent') {
+      load_mail('sent')
   }
 }
