@@ -48,9 +48,17 @@ function load_mail(mailbox) {
                 newSender = emails[i].sender;
             }
 
+            //Set newDiv innerHTML contents
             newTimestamp = emails[i].timestamp;
             newSubject = emails[i].subject;
             newDiv.innerHTML = newSender + " - " + newSubject + " - " + newTimestamp;
+
+            //Set newDiv CSS properties
+            if (emails[i].read == true){
+                newDiv.style = "border: 1px solid black; padding: 10px; background-color: lightgray;";
+            } else {
+                newDiv.style = "border: 1px solid black; padding: 10px;";
+            }
 
             document.querySelector("#emails-view").appendChild(newDiv);
 
