@@ -12,13 +12,12 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function send_mail() {
-    console.log('Sending mail');
     fetch('/emails', {
         method: 'POST',
         body: JSON.stringify({
-            recipients: 'ashelena@gmail.com',
-            subject: 'Meeting Time',
-            body: 'How about we meet tomorrow at 3pm?'
+            recipients: document.querySelector('#compose-recipients').value,
+            subject: document.querySelector('#compose-subject').value,
+            body: document.querySelector('#compose-body').value
         })
     })
     .then(response => response.json())
