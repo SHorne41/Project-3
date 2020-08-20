@@ -33,6 +33,7 @@ function load_mail(mailbox) {
     .then(response => response.json())
     .then(emails => {
         for (let i = 0; i < emails.length; i ++){
+            console.log(emails[i])
             let newDiv = document.createElement('div');
             let newSender = document.createElement('h1');
             let newSubject = document.createElement('h2');
@@ -40,7 +41,9 @@ function load_mail(mailbox) {
 
             //Determine 'sender' based on mailbox
             if (mailbox === 'sent'){
+                console.log(emails[i].recipients)
                 newSender = emails[i].recipients;
+
             } else {
                 newSender = emails[i].sender;
             }
@@ -80,6 +83,9 @@ function load_mailbox(mailbox) {
       load_mail('inbox');
   }
   else if (mailbox === 'sent') {
-      load_mail('sent')
+      load_mail('sent');
+  }
+  else if (mailbox === 'archive') {
+      load_mail('archive');
   }
 }
