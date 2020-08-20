@@ -31,7 +31,21 @@ function load_mail() {
     fetch('/emails/inbox')
     .then(response => response.json())
     .then(emails => {
-        console.log(emails);
+        for (let i = 0; i < emails.length; i ++){
+            let newDiv = document.createElement('div');
+            let newSender = document.createElement('h1');
+            let newSubject = document.createElement('h2');
+            let newTimestamp = document.createElement('h3');
+
+            console.log(emails[i].sender)
+            newSender = emails[i].sender;
+            newTimestamp = emails[i].timestamp;
+            newSubject = emails[i].subject;
+            newDiv.innerHTML = newSender + " - " + newSubject + " - " + newTimestamp;
+
+            document.querySelector("#emails-view").appendChild(newDiv);
+
+        }
     });
 }
 
