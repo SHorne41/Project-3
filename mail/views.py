@@ -29,6 +29,7 @@ def compose(request):
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
 
+    print('Sending mail')
     # Check recipient emails
     data = json.loads(request.body)
     emails = [email.strip() for email in data.get("recipients").split(",")]
