@@ -28,13 +28,42 @@ function send_mail() {
     load_mailbox('sent');
 }
 
+function view_email(emailID) {
+    fetch('/emails/' + emailID)
+    .then(response => response.json())
+    .then(email => {
+        //Hide the contents of the inbox and open the emails view
+        document.querySelector('#emails-view').style.display = 'block';
+        document.querySelector('#view-email').style.display = 'none';
+
+        //Create HTML elements to display contents of the email
+        let emailSubject = document.createElement('h2');
+        let emailHeader = document.createElement('h3');
+        let emailSubHeading = document.createElement('h4');
+        let emailBody = document.createElement('p');
+
+        //Populate HTML elements with email contents
+        emailSubject.innerHTML = email.subject;
+        emailHeader.innerHTML = email.sender + " " + email.timestamp;
+        emailSubHeading.innerHTML = email.recipients;
+        emailBody.innerHTML = email.body;
+
+        //Append HTML elements to parent <div> element
+        document.querySelector("#view-email").appendChild(emailSubject);
+        document.querySelector("#view-email").appendChild(emailHeader);
+        document.querySelector("#view-email").appendChild(emailSubHeading);
+        document.querySelector("#view-email").appendChild(emailBody);
+    })
+}
+
 function load_mail(mailbox) {
     fetch('/emails/' + mailbox)
     .then(response => response.json())
     .then(emails => {
         for (let i = 0; i < emails.length; i ++){
-            console.log(emails[i])
+            //Create new HTML elements to display inbox
             let newDiv = document.createElement('div');
+            let newLink = document.createElement('a');
             let newSender = document.createElement('h1');
             let newSubject = document.createElement('h2');
             let newTimestamp = document.createElement('h3');
@@ -48,10 +77,11 @@ function load_mail(mailbox) {
                 newSender = emails[i].sender;
             }
 
-            //Set newDiv innerHTML contents
+            //Populate HTML elements with appropriate email components
             newTimestamp = emails[i].timestamp;
             newSubject = emails[i].subject;
             newDiv.innerHTML = newSender + " - " + newSubject + " - " + newTimestamp;
+            newLink.href = "javascript:view_email(emails[i].id);" //return false;";
 
             //Set newDiv CSS properties
             if (emails[i].read == true){
@@ -60,7 +90,9 @@ function load_mail(mailbox) {
                 newDiv.style = "border: 1px solid black; padding: 10px;";
             }
 
-            document.querySelector("#emails-view").appendChild(newDiv);
+            //Append HTML elements to parent <div>
+            newLink.appendChild(newDiv);
+            document.querySelector("#emails-view").appendChild(newLink);
 
         }
     });
@@ -83,6 +115,7 @@ function load_mailbox(mailbox) {
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#view-email').style.display = 'none';
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
