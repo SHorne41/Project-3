@@ -33,19 +33,19 @@ function view_email(emailID) {
     .then(response => response.json())
     .then(email => {
         //Hide the contents of the inbox and open the emails view
-        document.querySelector('#emails-view').style.display = 'block';
-        document.querySelector('#view-email').style.display = 'none';
+        document.querySelector('#emails-view').style.display = 'none';
+        document.querySelector('#view-email').style.display = 'block';
 
         //Create HTML elements to display contents of the email
         let emailSubject = document.createElement('h2');
-        let emailHeader = document.createElement('h3');
-        let emailSubHeading = document.createElement('h4');
+        let emailHeader = document.createElement('h4');
+        let emailSubHeading = document.createElement('h6');
         let emailBody = document.createElement('p');
 
         //Populate HTML elements with email contents
         emailSubject.innerHTML = email.subject;
-        emailHeader.innerHTML = email.sender + " " + email.timestamp;
-        emailSubHeading.innerHTML = email.recipients;
+        emailHeader.innerHTML = "FROM: " + email.sender + ", " + email.timestamp;
+        emailSubHeading.innerHTML = "TO: " + email.recipients;
         emailBody.innerHTML = email.body;
 
         //Append HTML elements to parent <div> element
@@ -63,14 +63,12 @@ function load_mail(mailbox) {
         for (let i = 0; i < emails.length; i ++){
             //Create new HTML elements to display inbox
             let newDiv = document.createElement('div');
-            let newLink = document.createElement('a');
             let newSender = document.createElement('h1');
             let newSubject = document.createElement('h2');
             let newTimestamp = document.createElement('h3');
 
             //Determine 'sender' based on mailbox
             if (mailbox === 'sent'){
-                console.log(emails[i].recipients)
                 newSender = emails[i].recipients;
 
             } else {
@@ -81,7 +79,6 @@ function load_mail(mailbox) {
             newTimestamp = emails[i].timestamp;
             newSubject = emails[i].subject;
             newDiv.innerHTML = newSender + " - " + newSubject + " - " + newTimestamp;
-            newLink.href = "javascript:view_email(emails[i].id);" //return false;";
 
             //Set newDiv CSS properties
             if (emails[i].read == true){
@@ -91,8 +88,9 @@ function load_mail(mailbox) {
             }
 
             //Append HTML elements to parent <div>
-            newLink.appendChild(newDiv);
-            document.querySelector("#emails-view").appendChild(newLink);
+            newDiv.id = "email#" + emails[i].id;
+            newDiv.addEventListener('click', () => view_email(emails[i].id));
+            document.querySelector("#emails-view").appendChild(newDiv);
 
         }
     });
