@@ -43,7 +43,7 @@ function archive_email(state, emailID){
     });
 }
 
-function view_email(emailID) {
+function view_email(emailID, mailbox) {
     fetch('/emails/' + emailID)
     .then(response => response.json())
     .then(email => {
@@ -65,7 +65,6 @@ function view_email(emailID) {
         emailSubHeading.innerHTML = "TO: " + email.recipients;
         emailBody.innerHTML = email.body;
 
-        console.log(email.archived);
         //Check email status to determine contents of button - set contents
         if (String(email.archived) == 'false'){
             archiveButton.innerHTML = "Archive";
@@ -81,7 +80,9 @@ function view_email(emailID) {
         document.querySelector("#view-email").appendChild(emailHeader);
         document.querySelector("#view-email").appendChild(emailSubHeading);
         document.querySelector("#view-email").appendChild(emailBody);
-        document.querySelector("#view-email").appendChild(archiveButton);
+        if (mailbox != "sent"){
+            document.querySelector("#view-email").appendChild(archiveButton);
+        }
 
         //Make PUT request to update email as "READ"
         fetch(('/emails/' + emailID), {
@@ -126,7 +127,7 @@ function load_mail(mailbox) {
 
             //Append HTML elements to parent <div>
             newDiv.id = "email#" + emails[i].id;
-            newDiv.addEventListener('click', () => view_email(emails[i].id));
+            newDiv.addEventListener('click', () => view_email(emails[i].id, mailbox));
             document.querySelector("#emails-view").appendChild(newDiv);
 
         }
