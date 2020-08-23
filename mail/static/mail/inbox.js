@@ -33,8 +33,9 @@ function view_email(emailID) {
     .then(response => response.json())
     .then(email => {
         //Hide the contents of the inbox and open the emails view
-        document.querySelector('#emails-view').style.display = 'none';
         document.querySelector('#view-email').style.display = 'block';
+        document.querySelector('#view-email').innerHTML = '';           //Clears any data from previously opened emails
+        document.querySelector('#emails-view').style.display = 'none';
 
         //Create HTML elements to display contents of the email
         let emailSubject = document.createElement('h2');
