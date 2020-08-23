@@ -28,6 +28,21 @@ function send_mail() {
     load_mailbox('sent');
 }
 
+function archive_email(state, emailID){
+    let archived = 'True';
+    if (state == "true"){
+        archived = 'False';
+    }
+
+    //Make PUT request to update email's Archived attribute
+    fetch(('/emails/' + emailID), {
+        method: "PUT",
+        body: JSON.stringify({
+            archived: archived,
+        })
+    });
+}
+
 function view_email(emailID) {
     fetch('/emails/' + emailID)
     .then(response => response.json())
@@ -42,6 +57,7 @@ function view_email(emailID) {
         let emailHeader = document.createElement('h4');
         let emailSubHeading = document.createElement('h6');
         let emailBody = document.createElement('p');
+        let archiveButton = document.createElement('button');
 
         //Populate HTML elements with email contents
         emailSubject.innerHTML = email.subject;
@@ -49,11 +65,23 @@ function view_email(emailID) {
         emailSubHeading.innerHTML = "TO: " + email.recipients;
         emailBody.innerHTML = email.body;
 
+        console.log(email.archived);
+        //Check email status to determine contents of button - set contents
+        if (String(email.archived) == 'false'){
+            archiveButton.innerHTML = "Archive";
+        } else {
+            archiveButton.innerHTML = "Unarchive";
+        }
+
+        //Add event Listener to button
+        archiveButton.addEventListener('click', () => archive_email(String(email.archived), emailID));
+
         //Append HTML elements to parent <div> element
         document.querySelector("#view-email").appendChild(emailSubject);
         document.querySelector("#view-email").appendChild(emailHeader);
         document.querySelector("#view-email").appendChild(emailSubHeading);
         document.querySelector("#view-email").appendChild(emailBody);
+        document.querySelector("#view-email").appendChild(archiveButton);
 
         //Make PUT request to update email as "READ"
         fetch(('/emails/' + emailID), {
