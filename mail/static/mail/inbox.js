@@ -80,17 +80,21 @@ function view_email(emailID, mailbox) {
         document.querySelector("#view-email").appendChild(emailHeader);
         document.querySelector("#view-email").appendChild(emailSubHeading);
         document.querySelector("#view-email").appendChild(emailBody);
+
+        //User should not be able to archive emails in the 'sent' mailbox
         if (mailbox != "sent"){
             document.querySelector("#view-email").appendChild(archiveButton);
         }
 
-        //Make PUT request to update email as "READ"
-        fetch(('/emails/' + emailID), {
-            method: "PUT",
-            body: JSON.stringify({
-                read: 'True'
-            })
-        });
+        //If email was unread, make PUT request to update email as "READ"
+        if (String(email.read) == "false"){
+            fetch(('/emails/' + emailID), {
+                method: "PUT",
+                body: JSON.stringify({
+                    read: 'True'
+                })
+            });
+        }
     })
 }
 
