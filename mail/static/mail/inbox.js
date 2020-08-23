@@ -54,6 +54,14 @@ function view_email(emailID) {
         document.querySelector("#view-email").appendChild(emailHeader);
         document.querySelector("#view-email").appendChild(emailSubHeading);
         document.querySelector("#view-email").appendChild(emailBody);
+
+        //Make PUT request to update email as "READ"
+        fetch(('/emails/' + emailID), {
+            method: "PUT",
+            body: JSON.stringify({
+                read: 'True'
+            })
+        });
     })
 }
 

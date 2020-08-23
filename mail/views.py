@@ -115,6 +115,7 @@ def email(request, email_id):
         data = json.loads(request.body)
         if data.get("read") is not None:
             email.read = data["read"]
+            print("Email marked as read")
         if data.get("archived") is not None:
             email.archived = data["archived"]
         email.save()
