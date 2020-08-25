@@ -24,8 +24,6 @@ function send_mail() {
     .then(result => {
         console.log("Mail Sent");
     });
-
-    load_mailbox('sent');
 }
 
 function archive_email(state, emailID){
@@ -53,7 +51,7 @@ function reply_email(emailID){
 
         //Prepopulate reply with relevant information
         document.querySelector('#compose-recipients').value = email.sender;
-        document.querySelector('#compose-body').value = 'On ' + email.timestamp + ' ' + email.sender + ' wrote: \n\n' + email.body;
+        document.querySelector('#compose-body').value = '\n\n\n\n' + 'On ' + email.timestamp + ' ' + email.sender + ' wrote: \n\n' + email.body;
 
         //Determine if the email we're replying to is itself a reply
         let prefix = email.subject.substring(0, 3);
@@ -87,6 +85,7 @@ function view_email(emailID, mailbox) {
         emailHeader.innerHTML = "FROM: " + email.sender + ", " + email.timestamp;
         emailSubHeading.innerHTML = "TO: " + email.recipients;
         emailBody.innerHTML = email.body;
+        replyButton.innerHTML = "Reply";
 
         //Check email status to determine contents of button - set contents
         if (String(email.archived) == 'false'){
