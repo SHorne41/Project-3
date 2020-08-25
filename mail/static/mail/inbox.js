@@ -43,6 +43,28 @@ function archive_email(state, emailID){
     });
 }
 
+function reply_email(emailID){
+    fetch(('/emails/' + emailID))
+    .then(response => response.json())
+    .then(email => {
+        //Hide the contents of the email view and open the composition form
+        document.querySelector('#compose-view').style.display = 'block';
+        document.querySelector('#view-email').style.display = 'none';
+
+        //Prepopulate reply with relevant information
+        document.querySelector('#compose-recipients').value = email.sender;
+        document.querySelector('#compose-body').value = 'On ' + email.timestamp + ' ' + email.sender + ' wrote: \n\n' + email.body;
+
+        //Determine if the email we're replying to is itself a reply
+        let prefix = email.subject.substring(0, 3);
+        if (prefix === 'RE:'){
+            document.querySelector('#compose-subject').value = email.subject;           //If so, no need to add 'RE: ' prefix
+        } else {
+            document.querySelector('#compose-subject').value = 'RE: ' + email.subject;  //Otherwise, add 'RE: ' prefix
+        }
+    })
+}
+
 function view_email(emailID, mailbox) {
     fetch('/emails/' + emailID)
     .then(response => response.json())
@@ -58,6 +80,7 @@ function view_email(emailID, mailbox) {
         let emailSubHeading = document.createElement('h6');
         let emailBody = document.createElement('p');
         let archiveButton = document.createElement('button');
+        let replyButton = document.createElement('button');
 
         //Populate HTML elements with email contents
         emailSubject.innerHTML = email.subject;
@@ -74,6 +97,7 @@ function view_email(emailID, mailbox) {
 
         //Add event Listener to button
         archiveButton.addEventListener('click', () => archive_email(String(email.archived), emailID));
+        replyButton.addEventListener('click', () => reply_email(emailID));
 
         //Append HTML elements to parent <div> element
         document.querySelector("#view-email").appendChild(emailSubject);
@@ -81,8 +105,9 @@ function view_email(emailID, mailbox) {
         document.querySelector("#view-email").appendChild(emailSubHeading);
         document.querySelector("#view-email").appendChild(emailBody);
 
-        //User should not be able to archive emails in the 'sent' mailbox
+        //User should not be able to archive or reply to emails in the 'sent' mailbox
         if (mailbox != "sent"){
+            document.querySelector("#view-email").appendChild(replyButton);
             document.querySelector("#view-email").appendChild(archiveButton);
         }
 
